@@ -3,6 +3,7 @@ import CalculateTotalDays from "@/utils/dateCalculator";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
+import PTODates from "./pto-dates";
 
 
 export default function MainForm() {
@@ -74,6 +75,7 @@ export default function MainForm() {
               
               <div className="py-5">
                 <h1 className="h1" style={{color: "white"}}>PTO:</h1>
+                <PTODates></PTODates>
               </div>   
 
               <div className="flex flex-wrap -mx-3 mt-6">
