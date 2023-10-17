@@ -2,10 +2,11 @@ import React, { useState } from "react";
 
 
 export default function PTODates(){
-    const [ptoList, setPTOList] = useState([
-        {pto: ""},
-        {pto: ""},
-    ]);
+    const [ptoList, setPTOList] = useState([{pto: ""}]);
+
+    const handlePTOAdd = () => {
+        setPTOList([...ptoList, {pto: ""}]);
+    };
 
 
     const GeneratePTOInputs = () =>{
@@ -15,8 +16,10 @@ export default function PTODates(){
                 <button type="button" id="remove-btn" className="btn flex-row rounded-md text-white bg-blue-600 hover:bg-blue-700 py-2 px-2">
                     <span>Remove</span>
                 </button>
-                {ptoList.length - 1 === i && 
-                    <button type="button" id="add-btn" className="btn flex space-x-4 rounded-md text-white bg-blue-600 hover:bg-blue-700 py-2 px-2">
+                {ptoList.length - 1 === i && ptoList.length < 10 &&
+                    <button type="button" id="add-btn" className="btn flex space-x-4 rounded-md text-white bg-blue-600 hover:bg-blue-700 py-2 px-2"
+                    onClick={handlePTOAdd}
+                    >
                     <span>Add</span>
                     </button>
                 }
