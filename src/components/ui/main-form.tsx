@@ -23,7 +23,7 @@ export default function MainForm() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6">       
-      <div className="pt-32 pr-9 pl-9 pb-12 md:pt-15 md:pb-20 bg-slate-600"> 
+      <div className="pt-32 pr-9 pl-9 pb-12 md:pt-15 md:pb-20 bg-slate-600 rounded-md"> 
         <div className="max-w-sm mx-auto">            
           <div style={{padding:"5px 50px"}}>
               <h1 className="h1" style={{color: "white"}}>Enter Date Start & End to calculate</h1>
@@ -50,6 +50,11 @@ export default function MainForm() {
                 startDate={startDate}
                 minDate={startDate}
               />    
+              <div className="flex flex-wrap -mx-3 mt-6">
+                <div className="w-full px-3">
+                <button type="submit" className="btn rounded-md text-white bg-blue-600 hover:bg-blue-700 w-full py-2 px-4">Send</button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
