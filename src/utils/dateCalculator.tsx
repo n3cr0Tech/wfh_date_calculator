@@ -1,4 +1,5 @@
 import GetBankHolidays from "@/common/bankHolidays";
+import { start } from "repl";
 
 export function CalculateTotalDays(startDate: Date, endDate: Date): number{
     let a = new Date(startDate);
@@ -11,11 +12,14 @@ export function CalculateTotalDays(startDate: Date, endDate: Date): number{
 export function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
     let a = new Date(startDate);
     let b = new Date(endDate);
-    let dateDiff = b.getDate() - a.getDate();
+    let dateDiff = b.getDate() - a.getDate(); //number of days between dates
     let weekendDaysCount = GetWeekendDaysCount(a, b);
+    let bankHolidaysCount = GetBankHolidaysWithinStartEndDates(startDate, endDate);
 
-    return dateDiff;
+    let result = dateDiff - weekendDaysCount - bankHolidaysCount;
+    return result;
 }
+
 
 // return list of Dates to be in the office
 export function GetDatesToAttendOfficeWithinCycle(startDateOfWorkCycle: Date, numberOfWeeksInCycle: number, ptoDates: Date[]): Date[]{
@@ -85,6 +89,14 @@ function DateIsWorkday(date: Date): boolean{
     return result;
 }
 
+
+function DateIsWeekend(date: Date): boolean{
+    let dayNumber = date.getDay();
+    // day number of Saturday is 5, Sunday is 6
+    let result = dayNumber == 5 || dayNumber == 6;
+    return result;
+}
+
 function GetDateToStartLoopFrom(startDateOfWorkCycle: Date): Date{
     let today = new Date();
     let result = today;
@@ -103,6 +115,27 @@ function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): Date{
 
 }
 
-// function GetWeekendDaysCount(startDate: Date, endDate: Date): number{
-    
-// }
+function GetBankHolidaysWithinStartEndDates(startDate: Date, endDate: Date): number{
+    let bankHolidays = GetBankHolidays();
+    let counter = 0;
+    for(let i = 0; i < bankHolidays.length; i++){
+        // if bankHoliday is within the start & end dates, then increment counter
+        if(bankHolidays[i] >= startDate && bankHolidays[i] <= endDate){
+            counter++;
+        }
+    }
+    return counter;
+}
+
+// Returns the number of weekend days between dates (inclusive)
+function GetWeekendDaysCount(startDate: Date, endDate: Date): number{
+    let curDateLoop = startDate;
+    let workdayCounter = 0;
+    while(curDateLoop <= endDate){
+        if(DateIsWeekend(curDateLoop)){
+            workdayCounter++;
+        }        
+        curDateLoop.setDate(curDateLoop.getDate() + 1); // advance by 1 day to continue loop
+    }
+    return workdayCounter;
+}
