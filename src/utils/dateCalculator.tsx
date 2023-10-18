@@ -35,6 +35,15 @@ export function GetDatesToAttendOfficeWithinCycle(startDateOfWorkCycle: Date, nu
 // export default function CalculateTotalPTODays(startDateList: Date[], endDateList: Date[]): number{
 
 // }
+export function GetDatesBetweenStartEndDates(startDate: Date, endDate: Date){
+    let result = [] as Date[]
+    let curDateLoop = startDate;
+    while(curDateLoop <= endDate){
+        result.push(curDateLoop);
+        curDateLoop.setDate(curDateLoop.getDate() + 1); // advance by 1 day to continue loop
+    }
+    return result;
+}
 
 function DateIsValid(date: Date, ptoDates: Date[]): boolean{
     let dateIsWorkday = DateIsWorkday(date);
