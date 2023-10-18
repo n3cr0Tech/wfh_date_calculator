@@ -15,9 +15,12 @@ export default function PTODates(){
     };
 
     const handlePTORemove = (index:number) => {
-        const list = [...startDateList];
-        list.splice(index, 1);
-        setStartDateList(list);
+        const startList = [...startDateList];
+        const endList = [...endDateList];
+        startList.splice(index, 1);
+        endList.splice(index, 1);
+        setStartDateList(startList);
+        setEndDateList(endDateList);
     }
 
     const handleStartDateElementOnChange = (date: Date|null, index: number) =>{                
