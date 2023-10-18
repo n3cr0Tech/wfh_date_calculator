@@ -31,11 +31,7 @@ export function GetDatesToAttendOfficeWithinCycle(startDateOfWorkCycle: Date, nu
     return result;
 }
 
-// returns total number of pto days (excluding weekends & holidays)
-// export default function CalculateTotalPTODays(startDateList: Date[], endDateList: Date[]): number{
-
-// }
-export function GetDatesBetweenStartEndDates(startDate: Date, endDate: Date){
+export function GetDatesBetweenStartEndDates(startDate: Date, endDate: Date): Date[]{
     let result = [] as Date[]
     let curDateLoop = startDate;
     while(curDateLoop <= endDate){
@@ -107,6 +103,6 @@ function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): Date{
 
 }
 
-function GetWeekendDaysCount(startDate: Date, endDate: Date): number{
+// function GetWeekendDaysCount(startDate: Date, endDate: Date): number{
     
-}
+// }
