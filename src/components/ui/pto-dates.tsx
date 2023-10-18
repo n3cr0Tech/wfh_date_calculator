@@ -37,7 +37,7 @@ export default function PTODates(){
 
     return(
         <div>
-            <span>PTO Date</span>
+            <span>PTO Dates:</span>
             {
                 startDateList.map((e, i) =>(
                     <div key={`pto_${i}`}>

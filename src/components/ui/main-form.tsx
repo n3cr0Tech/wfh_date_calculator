@@ -15,7 +15,7 @@ export default function MainForm() {
     const [startDate, endDate] = range;
     setStartDate(startDate);
     setEndDate(endDate);
-    setCalculatedOutput("foo");
+    setCalculatedOutput("");
     
   };
 
@@ -73,8 +73,7 @@ export default function MainForm() {
                 />    
               </div>
               
-              <div className="py-5">
-                <h1 className="h1" style={{color: "white"}}>PTO:</h1>
+              <div className="py-5">                
                 <PTODates></PTODates>
               </div>   
 
