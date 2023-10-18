@@ -1,45 +1,62 @@
 import React, { useState } from "react";
 
+import DatePicker from "react-datepicker";
+import 'react-datepicker/dist/react-datepicker.css';
 
 export default function PTODates(){
-    const [ptoList, setPTOList] = useState([{pto: ""}]);
+    const [startDateList, setStartDateList] = useState<Date[]>([new Date()]);
+    const [endDateList, setEndDateList] = useState<Date[]>([new Date()]);
 
-    console.log(ptoList);
+    console.log(startDateList);
 
     const handlePTOAdd = () => {
-        setPTOList([...ptoList, {pto: ""}]);
+        setStartDateList([...startDateList, new Date()]);
+        setEndDateList([...endDateList, new Date()]);
     };
 
     const handlePTORemove = (index:number) => {
-        const list = [...ptoList];
+        const list = [...startDateList];
         list.splice(index, 1);
-        setPTOList(list);
+        setStartDateList(list);
     }
 
-    const handlPTOElementOnChange = (event: any, index: number) =>{
+    const handleStartDateElementOnChange = (event: any, index: number) =>{
         const {id, value} = event.target;
-        const list = [...ptoList];
-        list[index].pto = value;
-        setPTOList(list);
+        const list = [...startDateList];
+        list[index] = value;
+        setStartDateList(list);
+    }
+
+    const handleEndDateElementOnChange = (event: any, index: number) =>{
+        const {id, value} = event.target;
+        const list = [...endDateList];
+        list[index] = value;
+        setEndDateList(list);
     }
 
     return(
         <div>
             <label>PTO Date</label>
             {
-                ptoList.map((ptoElement, i) =>(
+                startDateList.map((e, i) =>(
                     <div key={`pto_${i}`}>
-                        <input name={`ptoStart_${i}`} type="text" required className="text-black"
-                        value={ptoElement.pto}
-                        onChange={(e) => handlPTOElementOnChange(e, i)}
-                        />  
-                        {ptoList.length > 1 && (
+                         <DatePicker
+                            id={`ptoEnd_${i}`} 
+                            className="text-black"
+                            selectsEnd
+                            selected={e}
+                            onChange={(e) => handleStartDateElementOnChange(e, i)}
+                            endDate={endDateList[i]}
+                            startDate={startDateList[i]}
+                            minDate={startDateList[i]}
+                        />                          
+                        {startDateList.length > 1 && (
                             <button type="button" id="remove-btn" className="btn flex-row rounded-md text-white bg-blue-600 hover:bg-blue-700 py-2 px-2"
                                 onClick={() => handlePTORemove(i)}>
                                 <span>Remove</span>
                             </button>
                         )}
-                        {ptoList.length - 1 === i && ptoList.length < 10 && (
+                        {startDateList.length - 1 === i && startDateList.length < 10 && (
                             <button type="button" id="add-btn" className="btn flex space-x-4 rounded-md text-white bg-blue-600 hover:bg-blue-700 py-2 px-2"
                             onClick={handlePTOAdd}
                             >
