@@ -1,15 +1,21 @@
 import { FormData } from "@/models/formData";
-import { GetDatesBetweenStartEndDates, GetDatesToAttendOfficeWithinCycle } from "@/utils/dateCalculator";
+import { CalculateTotalWorkDays, GetDatesBetweenStartEndDates, GetDatesToAttendOfficeWithinCycle, GetEndDateOfWorkCycle } from "@/utils/dateCalculator";
 import { start } from "repl";
 
 
 export default function GetCalculatedOutputForUser(formData: FormData, ): string{
     let result = `The entered data is foo blah blah`;
+    let endDateInCycle = GetEndDateOfWorkCycle(formData.startDate, formData.weeksInWorkCycle);
+
     let flattenedPTODates = FlattenPTODates(formData.ptoDates.startDates, formData.ptoDates.endDates);
-    let datesToGoToOffice = GetDatesToAttendOfficeWithinCycle(formData.startDate, formData.weeksInWorkCycle, formData.)
+    let datesToGoToOffice = GetDatesToAttendOfficeWithinCycle(formData.startDate, formData.weeksInWorkCycle, flattenedPTODates);
+    let totalWorkDaysInCycle = CalculateTotalWorkDays(formData.startDate, endDateInCycle);
+
 
     return result;
 }
+
+
 
 // Ex: turns start & end dates of 04/25 to 04/28 and returns Date[]:
 // [04/25, 04/26, 04/27, 04/28] (all as Date objects)

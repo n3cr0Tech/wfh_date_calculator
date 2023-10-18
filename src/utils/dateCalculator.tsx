@@ -1,6 +1,15 @@
 import GetBankHolidays from "@/common/bankHolidays";
 import { start } from "repl";
 
+export function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): Date{
+    let result = {} as Date;
+    result = startDate;
+    let daysInCycle = weeksInACycle * 7;
+    result.setDate(startDate.getDate() + daysInCycle);
+    return result;
+
+}
+
 export function CalculateTotalDays(startDate: Date, endDate: Date): number{
     let a = new Date(startDate);
     let b = new Date(endDate);
@@ -104,15 +113,6 @@ function GetDateToStartLoopFrom(startDateOfWorkCycle: Date): Date{
         result = startDateOfWorkCycle;
     }
     return result;
-}
-
-function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): Date{
-    let result = {} as Date;
-    result = startDate;
-    let daysInCycle = weeksInACycle * 7;
-    result.setDate(startDate.getDate() + daysInCycle);
-    return result;
-
 }
 
 function GetBankHolidaysWithinStartEndDates(startDate: Date, endDate: Date): number{
