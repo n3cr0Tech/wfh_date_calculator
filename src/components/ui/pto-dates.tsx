@@ -21,14 +21,14 @@ export default function PTODates(){
     }
 
     const handleStartDateElementOnChange = (event: any, index: number) =>{
-        const {id, value} = event.target;
+        const {name, value} = event.target;
         const list = [...startDateList];
         list[index] = value;
         setStartDateList(list);
     }
 
     const handleEndDateElementOnChange = (event: any, index: number) =>{
-        const {id, value} = event.target;
+        const {name, value} = event.target;
         const list = [...endDateList];
         list[index] = value;
         setEndDateList(list);
@@ -41,7 +41,7 @@ export default function PTODates(){
                 startDateList.map((e, i) =>(
                     <div key={`pto_${i}`}>
                          <DatePicker
-                            id={`ptoEnd_${i}`} 
+                            name={`ptoStart_${i}`} 
                             className="text-black"
                             selectsEnd
                             selected={e}
@@ -49,7 +49,18 @@ export default function PTODates(){
                             endDate={endDateList[i]}
                             startDate={startDateList[i]}
                             minDate={startDateList[i]}
-                        />                          
+                        /> 
+                        <span> To </span>
+                        <DatePicker
+                            name={`ptoEnd_${i}`} 
+                            className="text-black"
+                            selectsEnd
+                            selected={e}
+                            onChange={(e) => handleEndDateElementOnChange(e, i)}
+                            endDate={endDateList[i]}
+                            startDate={startDateList[i]}
+                            minDate={startDateList[i]}
+                        />                         
                         {startDateList.length > 1 && (
                             <button type="button" id="remove-btn" className="btn flex-row rounded-md text-white bg-blue-600 hover:bg-blue-700 py-2 px-2"
                                 onClick={() => handlePTORemove(i)}>
