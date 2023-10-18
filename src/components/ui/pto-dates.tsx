@@ -20,23 +20,21 @@ export default function PTODates(){
         setStartDateList(list);
     }
 
-    const handleStartDateElementOnChange = (event: any, index: number) =>{
-        const {name, value} = event.target;
+    const handleStartDateElementOnChange = (date: Date|null, index: number) =>{                
         const list = [...startDateList];
-        list[index] = value;
+        list[index] = date;
         setStartDateList(list);
     }
 
-    const handleEndDateElementOnChange = (event: any, index: number) =>{
-        const {name, value} = event.target;
+    const handleEndDateElementOnChange = (date: Date|null, index: number) =>{
         const list = [...endDateList];
-        list[index] = value;
+        list[index] = date;
         setEndDateList(list);
     }
 
     return(
         <div>
-            <label>PTO Date</label>
+            <span>PTO Date</span>
             {
                 startDateList.map((e, i) =>(
                     <div key={`pto_${i}`}>
@@ -44,8 +42,8 @@ export default function PTODates(){
                             name={`ptoStart_${i}`} 
                             className="text-black"
                             selectsEnd
-                            selected={e}
-                            onChange={(e) => handleStartDateElementOnChange(e, i)}
+                            selected={startDateList[i]}
+                            onChange={(date) => handleStartDateElementOnChange(date,i)}
                             endDate={endDateList[i]}
                             startDate={startDateList[i]}
                             minDate={startDateList[i]}
@@ -55,8 +53,8 @@ export default function PTODates(){
                             name={`ptoEnd_${i}`} 
                             className="text-black"
                             selectsEnd
-                            selected={e}
-                            onChange={(e) => handleEndDateElementOnChange(e, i)}
+                            selected={endDateList[i]}
+                            onChange={(date) => handleEndDateElementOnChange(date, i)}
                             endDate={endDateList[i]}
                             startDate={startDateList[i]}
                             minDate={startDateList[i]}
