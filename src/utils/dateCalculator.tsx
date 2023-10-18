@@ -32,14 +32,27 @@ export default function CalculateWorkDaysWithinCycle(startDateOfWorkCycle: Date,
 
 // }
 
-function DateIsValid(date: Date){
+function DateIsValid(date: Date, ptoDates: Date[]): boolean{
     let dateIsWorkday = DateIsWorkday(date);
-    let dateIsBankHoliday = DateIsBankHoliday(date);
+    let dateIsBankHoliday = DateIsBankHoliday(date, GetBankHolidays());
+    let dateIsPTO = DateIsPTO(date, ptoDates);
+    let result = dateIsWorkday && !dateIsBankHoliday && !dateIsPTO
+    return result;
 }
 
-function DateIsBankHoliday(dateToFind: Date): boolean{
-    let result = false;
-    let bankHolidays = GetBankHolidays();
+function DateIsPTO(dateToFind: Date, ptoDates: Date[]): boolean{
+    let result = false;    
+    for(let i = 0; i < ptoDates.length; i++){
+        if(DatesMatch(dateToFind, ptoDates[i])){
+            result = true;
+            break;
+        }
+    }
+    return result;
+}
+
+function DateIsBankHoliday(dateToFind: Date, bankHolidays: Date[]): boolean{
+    let result = false;    
     for(let i = 0; i < bankHolidays.length; i++){
         if(DatesMatch(dateToFind, bankHolidays[i])){
             result = true;
