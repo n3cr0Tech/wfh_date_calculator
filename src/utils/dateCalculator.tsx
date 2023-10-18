@@ -1,6 +1,6 @@
 import GetBankHolidays from "@/common/bankHolidays";
 
-export default function CalculateTotalDays(startDate: Date, endDate: Date): number{
+export function CalculateTotalDays(startDate: Date, endDate: Date): number{
     let a = new Date(startDate);
     let b = new Date(endDate);
     let dateDiff = b.getDate() - a.getDate();
@@ -8,7 +8,7 @@ export default function CalculateTotalDays(startDate: Date, endDate: Date): numb
     return dateDiff;
 }
 
-export default function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
+export function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
     let a = new Date(startDate);
     let b = new Date(endDate);
     let dateDiff = b.getDate() - a.getDate();
@@ -18,13 +18,17 @@ export default function CalculateTotalWorkDays(startDate: Date, endDate: Date): 
 }
 
 // return list of Dates to be in the office
-export default function CalculateWorkDaysWithinCycle(startDateOfWorkCycle: Date, numberOfWeeksInCycle: number): Date[]{
+export function GetDatesToAttendOfficeWithinCycle(startDateOfWorkCycle: Date, numberOfWeeksInCycle: number, ptoDates: Date[]): Date[]{
     let result = [] as Date[];
     let curDateLoop = GetDateToStartLoopFrom(startDateOfWorkCycle);
     let endDateLoop = GetEndDateOfWorkCycle(startDateOfWorkCycle, numberOfWeeksInCycle);
     while(curDateLoop <= endDateLoop){
-
+        if(DateIsValid(curDateLoop, ptoDates)){
+            result.push(curDateLoop);
+        }
+        curDateLoop.setDate(curDateLoop.getDate() + 1); // advance by 1 day to continue loop
     }
+    return result;
 }
 
 // returns total number of pto days (excluding weekends & holidays)
