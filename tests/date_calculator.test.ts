@@ -43,7 +43,7 @@ test('CalculateWeekendDaysAndHolidayDates returns properly', () => {
 
     let expected = startDate;
     let actual = CalculateWeekendDaysAndHolidayDates(weekendDays, bankHolidaysCount);
-    expect(actual.length).toBe(1);
+    expect(actual.length).toBe(2);
     expect(actual[0]).toStrictEqual(expected);
 });
 

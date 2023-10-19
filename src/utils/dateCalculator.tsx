@@ -22,7 +22,8 @@ export function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): D
 export function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
     let a = new Date(startDate);
     let b = new Date(endDate);    
-    const dateDiff = intervalToDuration({start: a, end: b}).days || 0; //number of days between dates    
+    let dateDiff = intervalToDuration({start: a, end: b}).days || 0; //number of days between dates    
+    dateDiff += 1; // include the startDate
 
     let weekendDays = GetWeekendDayDates(a, b);
     let bankHolidaysCount = GetBankHolidaysWithinStartEndDates(startDate, endDate);
@@ -88,6 +89,8 @@ function DateIsBankHoliday(dateToFind: Date, bankHolidays: Date[]): boolean{
 }
 
 function DatesMatch(dateA: Date, dateB: Date){
+    // console.log(`dateA: ${dateA}`);
+    // console.log(`dateB: ${dateB}`);
     let yearsMatch = dateA.getFullYear() === dateB.getFullYear();
     let monthsMatch = dateA.getMonth() === dateB.getMonth();
     let daysMatch = dateA.getDay() === dateB.getDay();
@@ -151,19 +154,21 @@ export function GetWeekendDayDates(startDate: Date, endDate: Date): Date[]{
 // Prevents duplicate counting of a date being BOTH a weekend AND a holiday
 // Example: if Jan 1st is a Sunday AND a bank holiday, it should only be accounted for once
 export function CalculateWeekendDaysAndHolidayDates(weekendDays: Date[], holidays: Date[]): Date[]{
-    let result = weekendDays.concat(holidays);
-    return GetUniqueDates(result);
+    let result = [] as Date[];
+    for(let i = 0; i < weekendDays.length; i++){
+        // if weekend is not already a holiday, add to result array
+        if(!DateIsInList(weekendDays[i], holidays)){
+            result.push(weekendDays[i]);
+        }        
+    }
+    return result;
 }
 
-function GetUniqueDates(arr: Date[]): Date[]{
-    let result = arr.concat(); // deepcopy array
-    for(let i = 0; i < arr.length; i++){
-        for(let j = i+1; j < arr.length; j++){
-            let datesMatch = DatesMatch(result[i], result[j])
-            if(datesMatch){
-                let elementBeforej = j - 1;
-                result.splice(elementBeforej, 1); //remove duplicate
-            }
+function DateIsInList(date: Date, arr: Date[]): boolean{
+    let result = false;
+    for(let j = 0; j < arr.length; j++){
+        if(DatesMatch(date, arr[j])){
+            result = true;
         }
     }
     return result;

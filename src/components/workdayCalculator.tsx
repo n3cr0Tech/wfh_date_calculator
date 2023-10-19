@@ -1,9 +1,10 @@
 import { FormData } from "@/models/formData";
 import { CalculateTotalWorkDays, GetDatesBetweenStartEndDates, GetDatesToAttendOfficeWithinCycle, GetEndDateOfWorkCycle } from "@/utils/dateCalculator";
-import { start } from "repl";
 
 
 export default function GetCalculatedOutputForUser(formData: FormData ): string{
+    console.log("!!! GetCalculatedOutputForUser formData:");
+    console.log(formData);
     let result = ``;
     let endDateInCycle = GetEndDateOfWorkCycle(formData.startDate, formData.weeksInWorkCycle);
 
