@@ -3,17 +3,15 @@ import { CalculateTotalWorkDays, GetDatesBetweenStartEndDates, GetDatesToAttendO
 import { start } from "repl";
 
 
-export default function GetCalculatedOutputForUser(formData: FormData, ): string{
-    let result = `The entered data is foo blah blah`;
+export default function GetCalculatedOutputForUser(formData: FormData ): string{
+    let result = ``;
     let endDateInCycle = GetEndDateOfWorkCycle(formData.startDate, formData.weeksInWorkCycle);
 
-    let flattenedPTODates = FlattenPTODates(formData.ptoDates.startDates, formData.ptoDates.endDates);
-    let datesToGoToOffice = GetDatesToAttendOfficeWithinCycle(formData.startDate, formData.weeksInWorkCycle, flattenedPTODates);
-    let totalWorkDaysInCycle = CalculateTotalWorkDays(formData.startDate, endDateInCycle);
-    let workDaysRatio = GetWorkRatio(formData.startDate, endDateInCycle);
+    let flattenedPTODates = FlattenPTODates(formData.ptoDates.startDates, formData.ptoDates.endDates);    
+    let datesToBeInTheOffice = GetDatesToAttendOfficeWithinCycle(formData.startDate, formData.weeksInWorkCycle, flattenedPTODates);
+    let workDaysRatio = GetWorkRatio(formData.startDate, endDateInCycle, datesToBeInTheOffice.length);
 
-    if(ItIsPossibleToMeetAttendanceRequirement(workDaysRatio, formData.attendanceRequired)){
-        let datesToBeInTheOffice = GetDatesToAttendOfficeWithinCycle(formData.startDate, formData.weeksInWorkCycle, flattenedPTODates);
+    if(ItIsPossibleToMeetAttendanceRequirement(workDaysRatio, formData.attendanceRequired)){        
         result = `YES: It's possible to fulfill the required office attendance of ${formData.attendanceRequired}% `;
         result += GetSuccessOutputString(datesToBeInTheOffice);
     }else{
@@ -53,10 +51,9 @@ function FormattedDateStamp(dateObject: Date): string{
     return result;
 }
 
-function GetWorkRatio(startDateCycle: Date, endDateCycle: Date): number{
-    let today = new Date();
-    let diffFromTodayAndEndOfCycle = endDateCycle.getDate() - today.getDate();
-    let ratio = diffFromTodayAndEndOfCycle / (endDateCycle.getDate() - startDateCycle.getDate());
+function GetWorkRatio(startDateCycle: Date, endDateCycle: Date, datesToBeInOffice: number): number{    
+    let totalWorkDaysInCycle = CalculateTotalWorkDays(startDateCycle, endDateCycle);    
+    let ratio = datesToBeInOffice / totalWorkDaysInCycle;
     return ratio;
 }
 
