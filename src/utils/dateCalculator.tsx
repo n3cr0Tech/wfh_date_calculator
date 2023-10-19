@@ -1,4 +1,5 @@
-import GetBankHolidays from "@/common/bankHolidays";
+import { intervalToDuration } from "date-fns";
+import GetBankHolidays from "../common/bankHolidays";
 import { start } from "repl";
 
 export function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): Date{
@@ -10,22 +11,24 @@ export function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): D
 
 }
 
-export function CalculateTotalDays(startDate: Date, endDate: Date): number{
-    let a = new Date(startDate);
-    let b = new Date(endDate);
-    let dateDiff = b.getDate() - a.getDate();
+// export function CalculateTotalDays(startDate: Date, endDate: Date): number{
+//     let a = new Date(startDate);
+//     let b = new Date(endDate);
+//     let dateDiff = b.getDate() - a.getDate();
 
-    return dateDiff;
-}
+//     return dateDiff;
+// }
 
 export function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
     let a = new Date(startDate);
-    let b = new Date(endDate);
-    let dateDiff = b.getDate() - a.getDate(); //number of days between dates
-    let weekendDaysCount = GetWeekendDaysCount(a, b);
-    let bankHolidaysCount = GetBankHolidaysWithinStartEndDates(startDate, endDate);
+    let b = new Date(endDate);    
+    const dateDiff = intervalToDuration({start: a, end: b}).days || 0; //number of days between dates    
 
-    let result = dateDiff - weekendDaysCount - bankHolidaysCount;
+    let weekendDays = GetWeekendDayDates(a, b);
+    let bankHolidaysCount = GetBankHolidaysWithinStartEndDates(startDate, endDate);
+    let combinedWeekednDaysAndHolidaysCount = CalculateWeekendDaysAndHolidayDates(weekendDays, bankHolidaysCount).length;
+
+    let result = dateDiff - combinedWeekednDaysAndHolidaysCount;
     return result;
 }
 
@@ -115,27 +118,53 @@ function GetDateToStartLoopFrom(startDateOfWorkCycle: Date): Date{
     return result;
 }
 
-function GetBankHolidaysWithinStartEndDates(startDate: Date, endDate: Date): number{
+export function GetBankHolidaysWithinStartEndDates(startDate: Date, endDate: Date): Date[]{
     let bankHolidays = GetBankHolidays();
-    let counter = 0;
+    let result = [] as Date[];
     for(let i = 0; i < bankHolidays.length; i++){
         // if bankHoliday is within the start & end dates, then increment counter
         if(bankHolidays[i] >= startDate && bankHolidays[i] <= endDate){
-            counter++;
+            result.push(bankHolidays[i]);
         }
     }
-    return counter;
+    return result;
 }
 
 // Returns the number of weekend days between dates (inclusive)
-function GetWeekendDaysCount(startDate: Date, endDate: Date): number{
+export function GetWeekendDaysCount(startDate: Date, endDate: Date): number{
+    let count = GetWeekendDayDates(startDate, endDate).length;
+    return count;
+}
+
+export function GetWeekendDayDates(startDate: Date, endDate: Date): Date[]{
     let curDateLoop = startDate;
-    let workdayCounter = 0;
+    let result = [] as Date[];
     while(curDateLoop <= endDate){
         if(DateIsWeekend(curDateLoop)){
-            workdayCounter++;
+            result.push(curDateLoop);
         }        
         curDateLoop.setDate(curDateLoop.getDate() + 1); // advance by 1 day to continue loop
     }
-    return workdayCounter;
+    return result;
+}
+
+// Prevents duplicate counting of a date being BOTH a weekend AND a holiday
+// Example: if Jan 1st is a Sunday AND a bank holiday, it should only be accounted for once
+export function CalculateWeekendDaysAndHolidayDates(weekendDays: Date[], holidays: Date[]): Date[]{
+    let result = weekendDays.concat(holidays);
+    return GetUniqueDates(result);
+}
+
+function GetUniqueDates(arr: Date[]): Date[]{
+    let result = arr.concat(); // deepcopy array
+    for(let i = 0; i < arr.length; i++){
+        for(let j = i+1; j < arr.length; j++){
+            let datesMatch = DatesMatch(result[i], result[j])
+            if(datesMatch){
+                let elementBeforej = j - 1;
+                result.splice(elementBeforej, 1); //remove duplicate
+            }
+        }
+    }
+    return result;
 }
