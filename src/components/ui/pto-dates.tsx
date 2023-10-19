@@ -3,15 +3,18 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 
-export default function PTODates(){
+export default function PTODates(props: {handleChangeInPTOStartDates: (e:any) => void, handleChangeInPTOEndDates: (e:any) => void}){
     const [startDateList, setStartDateList] = useState<Date[]>([new Date()]);
     const [endDateList, setEndDateList] = useState<Date[]>([new Date()]);
 
     console.log(startDateList);
 
-    const handlePTOAdd = () => {
+    const handlePTOAdd = () => {        
         setStartDateList([...startDateList, new Date()]);
         setEndDateList([...endDateList, new Date()]);
+
+        props.handleChangeInPTOStartDates(startDateList);
+        props.handleChangeInPTOEndDates(endDateList);
     };
 
     const handlePTORemove = (index:number) => {
@@ -19,20 +22,25 @@ export default function PTODates(){
         const endList = [...endDateList];
         startList.splice(index, 1);
         endList.splice(index, 1);
+      
         setStartDateList(startList);
         setEndDateList(endDateList);
+        props.handleChangeInPTOStartDates(startDateList);
+        props.handleChangeInPTOEndDates(endDateList);
     }
 
     const handleStartDateElementOnChange = (date: Date|null, index: number) =>{                
         const list = [...startDateList];
-        list[index] = date;
+        list[index] = date;        
         setStartDateList(list);
+        props.handleChangeInPTOStartDates(startDateList);        
     }
 
     const handleEndDateElementOnChange = (date: Date|null, index: number) =>{
         const list = [...endDateList];
-        list[index] = date;
-        setEndDateList(list);
+        list[index] = date;        
+        setEndDateList(list);        
+        props.handleChangeInPTOEndDates(endDateList);
     }
 
     return(

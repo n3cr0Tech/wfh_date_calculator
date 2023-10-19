@@ -1,33 +1,49 @@
 "use client"
-import CalculateTotalDays from "@/utils/dateCalculator";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
+import { FormData } from "@/models/formData";
 import 'react-datepicker/dist/react-datepicker.css';
 import PTODates from "./pto-dates";
+import GetCalculatedOutputForUser from "../workdayCalculator";
 
 
 export default function MainForm() {
   const [CalculatedOutput, setCalculatedOutput] = useState("");
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(new Date());  
+  const [ptoStartDates, setPTOStartDates] = useState<Date[]>([new Date()]);
+  const [ptoEndDates, setPTOEndDates] = useState<Date[]>([new Date()]);
 
-  const handleChange = (range: any) => {
-    const [startDate, endDate] = range;
-    setStartDate(startDate);
-    setEndDate(endDate);
-    setCalculatedOutput("");
-    
-  };
+
+  const handleChangeInPTOStartDates = (data: Date[]) =>{
+    setPTOStartDates(data);
+    console.log('incoming data:');
+    console.log(data);
+    console.log("updating startdates: ");
+    console.log(ptoStartDates);
+  }
+
+  const handleChangeInPTOEndDates = (data: Date[]) =>{
+    setPTOEndDates(data);
+  }
 
   const handleSubmit = (event: any) =>{
     event.preventDefault();
-    const tmpFormData = {
-      startDateTotal: event.target.startDateTotal.value,
-      endDateTotal: event.target.endDateTotal.value
+    // const tmpFormData = {
+    //   startDateTotal: event.target.startDateTotal.value,
+    //   endDateTotal: event.target.endDateTotal.value
+    // }
+    const formData = {} as FormData;
+    formData.startDate = startDate ? startDate : new Date();
+    formData.attendanceRequired = event.target.attendancePercentReq.value;
+    formData.weeksInWorkCycle = event.target.weeksInEachCycle.value;
+    formData.ptoDates = {
+      startDates: ptoStartDates,
+      endDates: ptoEndDates
     }
-
-    let dateDiff = CalculateTotalDays(tmpFormData.startDateTotal, tmpFormData.endDateTotal);
-    let output = `There's ${dateDiff} day(s) between the start and end date (inclusive)`
+    
+    console.log("!!! onSubmit formData: ");
+    console.log(formData);
+    let output = GetCalculatedOutputForUser(formData);
     setCalculatedOutput(output);
 
   }
@@ -60,21 +76,12 @@ export default function MainForm() {
                   startDate={startDate}
                   minDate={startDate}
                 />
-                <span> To </span>
-                <DatePicker
-                  id="endDateTotal"
-                  className="text-black"
-                  selectsEnd
-                  selected={endDate}
-                  onChange={date => setEndDate(date)}
-                  endDate={endDate}
-                  startDate={startDate}
-                  minDate={startDate}
-                />    
+                <input id="weeksInEachCycle" type="text" defaultValue={12} className="form-input w-full text-black" placeholder="# of Weeks in a cycle" required/>   
+                <input id="attendancePercentReq" type="text" defaultValue={60} className="form-input w-full text-black" placeholder="Percent of Attendance required (e.g. 60)" required/>   
               </div>
               
               <div className="py-5">                
-                <PTODates></PTODates>
+                <PTODates handleChangeInPTOStartDates={handleChangeInPTOStartDates} handleChangeInPTOEndDates={handleChangeInPTOEndDates}></PTODates>
               </div>   
 
               <div className="flex flex-wrap -mx-3 mt-6">
