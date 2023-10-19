@@ -1,5 +1,5 @@
-import { FormData } from "@/models/formData";
-import { CalculateTotalWorkDays, GetDatesBetweenStartEndDates, GetDatesToAttendOfficeWithinCycle, GetEndDateOfWorkCycle } from "@/utils/dateCalculator";
+import { FormData } from "../models/formData";
+import { CalculateTotalWorkDays, GetDatesBetweenStartEndDates, GetDatesToAttendOfficeWithinCycle, GetEndDateOfWorkCycle } from "../utils/dateCalculator";
 
 
 export default function GetCalculatedOutputForUser(formData: FormData ): string{
@@ -9,8 +9,12 @@ export default function GetCalculatedOutputForUser(formData: FormData ): string{
     let endDateInCycle = GetEndDateOfWorkCycle(formData.startDate, formData.weeksInWorkCycle);
 
     let flattenedPTODates = FlattenPTODates(formData.ptoDates.startDates, formData.ptoDates.endDates);    
+    // console.log(`!!! flattenedPTODates: ${flattenedPTODates}`);
     let datesToBeInTheOffice = GetDatesToAttendOfficeWithinCycle(formData.startDate, formData.weeksInWorkCycle, flattenedPTODates);
+    // console.log(`!!! datesToBeInTheOffice: ${datesToBeInTheOffice}`);
     let workDaysRatio = GetWorkRatio(formData.startDate, endDateInCycle, datesToBeInTheOffice.length);
+    // console.log(`!!! workDaysRatio: ${workDaysRatio}`);
+
 
     if(ItIsPossibleToMeetAttendanceRequirement(workDaysRatio, formData.attendanceRequired)){        
         result = `YES: It's possible to fulfill the required office attendance of ${formData.attendanceRequired}% `;
@@ -21,6 +25,7 @@ export default function GetCalculatedOutputForUser(formData: FormData ): string{
         result += `It wont be possible to complete the attendance percentage of: ${formData.attendanceRequired}% with the given data`;
     }
 
+    console.log(`!!! RESULT: ${result}`);
     return result;
 }
 
@@ -65,17 +70,17 @@ function ItIsPossibleToMeetAttendanceRequirement(ratio: number, attendancePercen
 
 // Ex: turns start & end dates of 04/25 to 04/28 and returns Date[]:
 // [04/25, 04/26, 04/27, 04/28] (all as Date objects)
-function FlattenPTODates(startDates: Date[], endDates: Date[]): Date[]{
-    let flattenedDates = [] as Date[];
+export function FlattenPTODates(startDates: Date[], endDates: Date[]): Date[]{
+    var flattenedDates = [] as Date[];
     for(let i = 0; i < startDates.length; i++){
-        let curDateRange = FlattenStartEndDates(startDates[i], endDates[i]);
-        flattenedDates.concat(curDateRange);
-    }
+        let curDateRange = FlattenStartEndDates(startDates[i], endDates[i]);        
+        flattenedDates = flattenedDates.concat(curDateRange) ;        
+    }    
     return flattenedDates;
 }
 
 // return the Dates in between start and end dates
-function FlattenStartEndDates(dateStart: Date, dateEnd: Date): Date[] {
+export function FlattenStartEndDates(dateStart: Date, dateEnd: Date): Date[] {
     let result = [] as Date[];
     //account for user mistake of not editing the end date UI properly
     //if the end date comes before the start date THEN just assume the result is just the startDate (instead of a range of dates)
