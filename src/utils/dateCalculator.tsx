@@ -1,6 +1,5 @@
-import { intervalToDuration } from "date-fns";
+import { intervalToDuration, addDays } from "date-fns";
 import GetBankHolidays from "../common/bankHolidays";
-import { start } from "repl";
 
 export function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): Date{
     let result = {} as Date;
@@ -50,11 +49,13 @@ export function GetDatesToAttendOfficeWithinCycle(startDateOfWorkCycle: Date, nu
 
 export function GetDatesBetweenStartEndDates(startDate: Date, endDate: Date): Date[]{
     let result = [] as Date[]
-    let curDateLoop = startDate;
+    let curDateLoop = new Date(startDate);
     while(curDateLoop <= endDate){
         result.push(curDateLoop);
-        curDateLoop.setDate(curDateLoop.getDate() + 1); // advance by 1 day to continue loop
+        curDateLoop = addDays(curDateLoop, 1); // advance by 1 day to continue loop
     }
+    console.log("!!! GetDatesBetweenStartEndDates");
+    console.log(result);
     return result;
 }
 
