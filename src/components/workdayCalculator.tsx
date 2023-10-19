@@ -25,7 +25,7 @@ export default function GetCalculatedOutputForUser(formData: FormData ): string{
         result += `It wont be possible to complete the attendance percentage of: ${formData.attendanceRequired}% with the given data`;
     }
 
-    console.log(`!!! RESULT: ${result}`);
+    // console.log(`!!! RESULT: ${result}`);
     return result;
 }
 
