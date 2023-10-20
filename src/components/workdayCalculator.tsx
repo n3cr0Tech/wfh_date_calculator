@@ -25,12 +25,12 @@ export default function GetCalculatedOutputForUser(today: Date, formData: FormDa
 
     console.log(`!!! workRatio: ${workDaysRatio} <VS> attendanceReq: ${formData.attendanceRequired}`);
     if(ItIsPossibleToMeetAttendanceRequirement(workDaysRatio, formData.attendanceRequired)){        
-        result = `YES: It's possible to fulfill the required office attendance of ${formData.attendanceRequired}% `;
+        result = `YES: It's possible to fulfill the required office attendance of ${formData.attendanceRequired * 100}% \n\n`;
         result += GetSuccessOutputString(datesToBeInTheOffice);
     }else{
         let today = new Date();
-        result = `NO: It is too late to calculate the attendance dates based on the date today: ${today} and the given start of the work cycled: ${formData.startDate}\n`;
-        result += `It wont be possible to complete the attendance percentage of: ${formData.attendanceRequired}% with the given data`;
+        result = `NO: It is too late to calculate the attendance dates based on the date today: ${today} and the given start of the work cycled: ${formData.startDate}\n\n`;
+        result += `It wont be possible to complete the attendance percentage of: ${formData.attendanceRequired * 100}% with the given data`;
     }
 
     console.log(`!!! RESULT: ${result}`);
@@ -38,7 +38,7 @@ export default function GetCalculatedOutputForUser(today: Date, formData: FormDa
 }
 
 function GetSuccessOutputString(datesToBeInOffice: Date[]): string{
-    let result = `You just need to go to the office in the following dates: `;
+    let result = `You just need to go to the office in the following dates: \n`;
     for(let i = 0; i < datesToBeInOffice.length; i++){
         let formattedDate = FormattedDateStamp(datesToBeInOffice[i]);
         result += `${formattedDate} \n`;
