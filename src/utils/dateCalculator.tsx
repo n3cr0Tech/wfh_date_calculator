@@ -98,7 +98,7 @@ function DatesMatch(dateA: Date, dateB: Date){
     // console.log(`dateB: ${dateB}`);
     let yearsMatch = dateA.getFullYear() === dateB.getFullYear();
     let monthsMatch = dateA.getMonth() === dateB.getMonth();
-    let daysMatch = dateA.getDay() === dateB.getDay();
+    let daysMatch = dateA.getDate() === dateB.getDate();
     return yearsMatch && monthsMatch && daysMatch;
 }
 
