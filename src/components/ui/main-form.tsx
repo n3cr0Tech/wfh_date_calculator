@@ -32,8 +32,11 @@ export default function MainForm() {
     //   startDateTotal: event.target.startDateTotal.value,
     //   endDateTotal: event.target.endDateTotal.value
     // }
-    const formData = {} as FormData;
-    formData.startDate = startDate ? startDate : new Date();
+    const formData = {} as FormData;    
+
+    let tmp = startDate ? startDate : new Date();
+    let copyStartDate = new Date(tmp);
+    formData.startDate = copyStartDate;
     formData.attendanceRequired = event.target.attendancePercentReq.value;
     formData.weeksInWorkCycle = event.target.weeksInEachCycle.value;
     formData.ptoDates = {

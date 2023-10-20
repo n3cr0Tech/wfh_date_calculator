@@ -2,8 +2,7 @@ import { intervalToDuration, addDays } from "date-fns";
 import GetBankHolidays from "../common/bankHolidays";
 
 export function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): Date{
-    let result = {} as Date;
-    result = startDate;
+    let result = new Date(startDate);
     let daysInCycle = weeksInACycle * 7;
     result.setDate(startDate.getDate() + daysInCycle);
     return result;
@@ -36,12 +35,13 @@ export function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
 // return list of Dates to be in the office
 export function GetDatesToAttendOfficeWithinCycle(today: Date, startDateOfWorkCycle: Date, numberOfWeeksInCycle: number, ptoDates: Date[]): Date[]{
     let result = [] as Date[];    
-    let curDateLoop = GetDateToStartLoopFrom(today, startDateOfWorkCycle);
+    let tmp = GetDateToStartLoopFrom(today, startDateOfWorkCycle);
+    let curDateLoop = new Date(tmp); //deepcopy
     // console.log(`!!! GetDatesToAttendOfficeWithinCycle.startDay: ${curDateLoop}`);
     let endDateLoop = GetEndDateOfWorkCycle(startDateOfWorkCycle, numberOfWeeksInCycle);
     // console.log(`!!! GetDatesToAttendOfficeWithinCycle.endDateLoop: ${endDateLoop}`);
     while(curDateLoop < endDateLoop){
-        console.log(`!!! GetDatesToAttendOfficeWithinCycle loop; ${curDateLoop.getDate()} <VS> ${endDateLoop.getDate()}`)
+        console.log(`!!! GetDatesToAttendOfficeWithinCycle loop; ${curDateLoop} <VS> ${endDateLoop}`)
         if(DateIsValid(curDateLoop, ptoDates)){
             result.push(curDateLoop);
         }
@@ -54,7 +54,8 @@ export function GetDatesBetweenStartEndDates(startDate: Date, endDate: Date): Da
     let result = [] as Date[]
     let curDateLoop = new Date(startDate);
     while(curDateLoop <= endDate){
-        result.push(curDateLoop);
+        let tmp = new Date(curDateLoop);
+        result.push(tmp);
         curDateLoop = addDays(curDateLoop, 1); // advance by 1 day to continue loop
     }
     // console.log("!!! GetDatesBetweenStartEndDates");
