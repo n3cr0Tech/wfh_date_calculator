@@ -79,8 +79,7 @@ export default function MainForm() {
                   selectsStart
                   selected={startDate}
                   onChange={date => setStartDate(date)}
-                  startDate={startDate}
-                  minDate={startDate}
+                  startDate={startDate}                  
                 />
                 <input id="weeksInEachCycle" type="text" defaultValue={12} className="form-input w-full text-black" placeholder="# of Weeks in a cycle" required/>   
                 <input id="attendancePercentReq" type="text" defaultValue={60} className="form-input w-full text-black" placeholder="Percent of Attendance required (e.g. 60)" required/>   
