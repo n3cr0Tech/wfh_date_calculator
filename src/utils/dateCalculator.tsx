@@ -34,10 +34,12 @@ export function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
 
 
 // return list of Dates to be in the office
-export function GetDatesToAttendOfficeWithinCycle(startDateOfWorkCycle: Date, numberOfWeeksInCycle: number, ptoDates: Date[]): Date[]{
-    let result = [] as Date[];
-    let curDateLoop = GetDateToStartLoopFrom(startDateOfWorkCycle);
+export function GetDatesToAttendOfficeWithinCycle(today: Date, startDateOfWorkCycle: Date, numberOfWeeksInCycle: number, ptoDates: Date[]): Date[]{
+    let result = [] as Date[];    
+    let curDateLoop = GetDateToStartLoopFrom(today, startDateOfWorkCycle);
+    console.log(`!!! GetDatesToAttendOfficeWithinCycle.startDay: ${curDateLoop}`);
     let endDateLoop = GetEndDateOfWorkCycle(startDateOfWorkCycle, numberOfWeeksInCycle);
+    console.log(`!!! GetDatesToAttendOfficeWithinCycle.endDateLoop: ${endDateLoop}`);
     while(curDateLoop <= endDateLoop){
         if(DateIsValid(curDateLoop, ptoDates)){
             result.push(curDateLoop);
@@ -54,8 +56,8 @@ export function GetDatesBetweenStartEndDates(startDate: Date, endDate: Date): Da
         result.push(curDateLoop);
         curDateLoop = addDays(curDateLoop, 1); // advance by 1 day to continue loop
     }
-    console.log("!!! GetDatesBetweenStartEndDates");
-    console.log(result);
+    // console.log("!!! GetDatesBetweenStartEndDates");
+    // console.log(result);
     return result;
 }
 
@@ -113,8 +115,7 @@ function DateIsWeekend(date: Date): boolean{
     return result;
 }
 
-function GetDateToStartLoopFrom(startDateOfWorkCycle: Date): Date{
-    let today = new Date();
+function GetDateToStartLoopFrom(today: Date, startDateOfWorkCycle: Date): Date{    
     let result = today;
     if(today < startDateOfWorkCycle){
         result = startDateOfWorkCycle;

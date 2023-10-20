@@ -2,18 +2,18 @@ import { FormData } from "../models/formData";
 import { CalculateTotalWorkDays, GetDatesBetweenStartEndDates, GetDatesToAttendOfficeWithinCycle, GetEndDateOfWorkCycle } from "../utils/dateCalculator";
 
 
-export default function GetCalculatedOutputForUser(formData: FormData ): string{
+export default function GetCalculatedOutputForUser(today: Date, formData: FormData ): string{
     console.log("!!! GetCalculatedOutputForUser formData:");
     console.log(formData);
     let result = ``;
     let endDateInCycle = GetEndDateOfWorkCycle(formData.startDate, formData.weeksInWorkCycle);
 
     let flattenedPTODates = FlattenPTODates(formData.ptoDates.startDates, formData.ptoDates.endDates);    
-    // console.log(`!!! flattenedPTODates: ${flattenedPTODates}`);
-    let datesToBeInTheOffice = GetDatesToAttendOfficeWithinCycle(formData.startDate, formData.weeksInWorkCycle, flattenedPTODates);
-    // console.log(`!!! datesToBeInTheOffice: ${datesToBeInTheOffice}`);
+    console.log(`!!! flattenedPTODates: ${flattenedPTODates}`);
+    let datesToBeInTheOffice = GetDatesToAttendOfficeWithinCycle(today, formData.startDate, formData.weeksInWorkCycle, flattenedPTODates);
+    console.log(`!!! datesToBeInTheOffice: ${datesToBeInTheOffice}`);
     let workDaysRatio = GetWorkRatio(formData.startDate, endDateInCycle, datesToBeInTheOffice.length);
-    // console.log(`!!! workDaysRatio: ${workDaysRatio}`);
+    console.log(`!!! workDaysRatio: ${workDaysRatio}`);
 
 
     if(ItIsPossibleToMeetAttendanceRequirement(workDaysRatio, formData.attendanceRequired)){        
@@ -25,7 +25,7 @@ export default function GetCalculatedOutputForUser(formData: FormData ): string{
         result += `It wont be possible to complete the attendance percentage of: ${formData.attendanceRequired}% with the given data`;
     }
 
-    // console.log(`!!! RESULT: ${result}`);
+    console.log(`!!! RESULT: ${result}`);
     return result;
 }
 
