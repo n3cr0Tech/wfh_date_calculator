@@ -21,7 +21,7 @@ export default function GetCalculatedOutputForUser(today: Date, formData: FormDa
         result += GetSuccessOutputString(datesToBeInTheOffice);
     }else{
         let today = new Date();
-        result = `NO: It is too late to calculate the attendance dates based on the date today: ${today.getDate()} and the given start of the work cycled: ${formData.startDate.getDate()}\n`;
+        result = `NO: It is too late to calculate the attendance dates based on the date today: ${today} and the given start of the work cycled: ${formData.startDate}\n`;
         result += `It wont be possible to complete the attendance percentage of: ${formData.attendanceRequired}% with the given data`;
     }
 
