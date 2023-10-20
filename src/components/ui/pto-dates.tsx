@@ -51,8 +51,7 @@ export default function PTODates(props: {handleChangeInPTOStartDates: (e:any) =>
                     <div key={`pto_${i}`}>
                          <DatePicker
                             name={`ptoStart_${i}`} 
-                            className="text-black"
-                            selectsEnd
+                            className="text-black"                            
                             selected={startDateList[i]}
                             onChange={(date) => handleStartDateElementOnChange(date,i)}
                             endDate={endDateList[i]}
