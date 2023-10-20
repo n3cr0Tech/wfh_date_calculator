@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { FormData } from "../models/formData";
 import { CalculateTotalWorkDays, GetDatesBetweenStartEndDates, GetDatesToAttendOfficeWithinCycle, GetEndDateOfWorkCycle } from "../utils/dateCalculator";
 
@@ -43,22 +44,8 @@ function GetSuccessOutputString(datesToBeInOffice: Date[]): string{
     return result;
 }
 
-function FormattedDateStamp(dateObject: Date): string{
-    var dayTmp = String(dateObject.getDate());
-    dayTmp += "0";
-    const day = dayTmp.slice(-2);
-    
-    var monthTmp = String(dateObject.getMonth() + 1)
-    monthTmp += "0";
-    const month = monthTmp.slice(-2);
-    const year = dateObject.getFullYear();   
-
-    // const time = String(dateObject).split(' ')[4];
-    // // prints date in YYYY-MM-DD format
-    // console.log(`${year}-${month}-${day}`);
-    // // prints date & time in YYYY-MM-DD HH:MM:SS format
-    // console.log(`${year}-${month}-${day} ${time}`);
-    let result = `${year}-${month}-${day}`; 
+function FormattedDateStamp(dateObject: Date): string{    
+    let result = format(dateObject, "yyyy-MM-dd");
     return result;
 }
 
