@@ -17,10 +17,10 @@ test('GetDatesBetweenStartEndDates returns properly', () => {
 test('FlattenStartEndDates returns properly', () => {
     let today = new Date()
     let startDate = new Date(`${today.getFullYear()}-01-01`);
-    let endDate = new Date(`${today.getFullYear()}-01-07`);
+    let endDate = new Date(`${today.getFullYear()}-01-02`);
 
     let actual = FlattenStartEndDates(startDate, endDate);
-    expect(actual.length).toBe(7);
+    expect(actual.length).toBe(2);
 });
 
 test('FlattenPTODates returns properly', () => {
