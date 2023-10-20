@@ -43,7 +43,9 @@ export default function MainForm() {
     
     console.log("!!! onSubmit formData: ");
     console.log(formData);
-    let output = GetCalculatedOutputForUser(formData);
+
+    let today = new Date();
+    let output = GetCalculatedOutputForUser(today, formData);
     setCalculatedOutput(output);
 
   }
