@@ -104,8 +104,8 @@ function DatesMatch(dateA: Date, dateB: Date){
 
 function DateIsWorkday(date: Date): boolean{
     let dayNumber = date.getDay();
-    // day number of Saturday is 5, Sunday is 6
-    let result = dayNumber < 5
+    // day number of Sunday is 0, Saturday is 6
+    let result = dayNumber != 0 && dayNumber != 6;
     return result;
 }
 
