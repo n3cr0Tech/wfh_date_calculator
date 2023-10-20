@@ -9,6 +9,8 @@ export default function GetCalculatedOutputForUser(today: Date, formData: FormDa
     let result = ``;
     //turn attendance requirement it into a decimal percentage
     formData.attendanceRequired /= 100;
+    today.setHours(0,0,0,0);//set time to 0's because it can mess with the calculations
+
     let endDateInCycle = GetEndDateOfWorkCycle(formData.startDate, formData.weeksInWorkCycle);
     // console.log(`!!! startDate0: ${formData.startDate}`);
     let flattenedPTODates = FlattenPTODates(formData.ptoDates.startDates, formData.ptoDates.endDates);    

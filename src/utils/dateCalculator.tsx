@@ -5,6 +5,7 @@ export function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): D
     let result = new Date(startDate);
     let daysInCycle = weeksInACycle * 7;
     result.setDate(startDate.getDate() + daysInCycle);
+    result.setHours(0,0,0,0);
     return result;
 
 }
@@ -35,15 +36,16 @@ export function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
 // return list of Dates to be in the office
 export function GetDatesToAttendOfficeWithinCycle(today: Date, startDateOfWorkCycle: Date, numberOfWeeksInCycle: number, ptoDates: Date[]): Date[]{
     let result = [] as Date[];    
-    let tmp = GetDateToStartLoopFrom(today, startDateOfWorkCycle);
-    let curDateLoop = new Date(tmp); //deepcopy
+    // let tmp = GetDateToStartLoopFrom(today, startDateOfWorkCycle);
+    let curDateLoop = new Date(today); //deepcopy
     // console.log(`!!! GetDatesToAttendOfficeWithinCycle.startDay: ${curDateLoop}`);
     let endDateLoop = GetEndDateOfWorkCycle(startDateOfWorkCycle, numberOfWeeksInCycle);
     // console.log(`!!! GetDatesToAttendOfficeWithinCycle.endDateLoop: ${endDateLoop}`);
-    while(curDateLoop < endDateLoop){
-        console.log(`!!! GetDatesToAttendOfficeWithinCycle loop; ${curDateLoop} <VS> ${endDateLoop}`)
+    while(curDateLoop <= endDateLoop){
+        console.log(`!!! GetDatesToAttendOfficeWithinCycle loop; ${curDateLoop} <VS> ${endDateLoop}`)        
         if(DateIsValid(curDateLoop, ptoDates)){
-            result.push(curDateLoop);
+            let tmp = new Date(curDateLoop);            
+            result.push(tmp);
         }
         curDateLoop.setDate(curDateLoop.getDate() + 1); // advance by 1 day to continue loop
     }
@@ -63,17 +65,20 @@ export function GetDatesBetweenStartEndDates(startDate: Date, endDate: Date): Da
     return result;
 }
 
-function DateIsValid(date: Date, ptoDates: Date[]): boolean{
+function DateIsValid(date: Date, ptoDates: Date[]): boolean{    
+    console.log(`checking if date is valid: ${date}; dayNumber: ${date.getDay()}`);
     let dateIsWorkday = DateIsWorkday(date);
     let dateIsBankHoliday = DateIsBankHoliday(date, GetBankHolidays());
     let dateIsPTO = DateIsPTO(date, ptoDates);
     let result = dateIsWorkday && !dateIsBankHoliday && !dateIsPTO
+    console.log(`isWorkDay: ${dateIsWorkday}...isHoliday: ${dateIsBankHoliday}...isPTO: ${dateIsPTO}`);
     return result;
 }
 
 function DateIsPTO(dateToFind: Date, ptoDates: Date[]): boolean{
     let result = false;    
     for(let i = 0; i < ptoDates.length; i++){
+        console.log(`Determining MATCH: ${dateToFind} <VS> ${ptoDates[i]}`);
         if(DatesMatch(dateToFind, ptoDates[i])){
             result = true;
             break;
