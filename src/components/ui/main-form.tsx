@@ -95,6 +95,7 @@ export default function MainForm() {
                 </div>
               </div>
               <textarea 
+                readOnly
                 className="w-full py-12 text-black"
                 value={CalculatedOutput}
               />              
