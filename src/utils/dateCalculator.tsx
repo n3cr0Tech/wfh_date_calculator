@@ -19,15 +19,18 @@ export function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): D
 // }
 
 export function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
+    console.log(`CalculateTotalWorkDays: ${startDate} TO ${endDate}`);
     let a = new Date(startDate);
     let b = new Date(endDate);    
     let dateDiff = intervalToDuration({start: a, end: b}).days || 0; //number of days between dates    
     dateDiff += 1; // include the startDate
 
     let weekendDays = GetWeekendDayDates(a, b);
-    let bankHolidaysCount = GetBankHolidaysWithinStartEndDates(startDate, endDate);
-    let combinedWeekednDaysAndHolidaysCount = CalculateWeekendDaysAndHolidayDates(weekendDays, bankHolidaysCount).length;
-
+    let bankHolidays = GetBankHolidaysWithinStartEndDates(startDate, endDate);
+    let combinedWeekednDaysAndHolidaysCount = CalculateWeekendDaysAndHolidayDates(weekendDays, bankHolidays).length;
+    console.log(`weekendDays: ${weekendDays}`);
+    console.log(`bankHolidaysCount: ${bankHolidays}`);
+    console.log(`combinedWeekednDaysAndHolidaysCount: ${combinedWeekednDaysAndHolidaysCount}`);
     let result = dateDiff - combinedWeekednDaysAndHolidaysCount;
     return result;
 }
@@ -78,7 +81,7 @@ function DateIsValid(date: Date, ptoDates: Date[]): boolean{
 function DateIsPTO(dateToFind: Date, ptoDates: Date[]): boolean{
     let result = false;    
     for(let i = 0; i < ptoDates.length; i++){
-        console.log(`Determining MATCH: ${dateToFind} <VS> ${ptoDates[i]}`);
+        // console.log(`Determining MATCH: ${dateToFind} <VS> ${ptoDates[i]}`);
         if(DatesMatch(dateToFind, ptoDates[i])){
             result = true;
             break;
@@ -117,8 +120,8 @@ function DateIsWorkday(date: Date): boolean{
 
 function DateIsWeekend(date: Date): boolean{
     let dayNumber = date.getDay();
-    // day number of Saturday is 5, Sunday is 6
-    let result = dayNumber == 5 || dayNumber == 6;
+    // day number of Sunday is 0, Saturday is 6
+    let result = dayNumber == 0 || dayNumber == 6;
     return result;
 }
 
@@ -149,11 +152,14 @@ export function GetWeekendDaysCount(startDate: Date, endDate: Date): number{
 }
 
 export function GetWeekendDayDates(startDate: Date, endDate: Date): Date[]{
-    let curDateLoop = startDate;
+    let curDateLoop = new Date(startDate);
+    curDateLoop.setHours(0,0,0,0);
     let result = [] as Date[];
     while(curDateLoop <= endDate){
         if(DateIsWeekend(curDateLoop)){
-            result.push(curDateLoop);
+            let tmp = new Date(curDateLoop);
+            tmp.setHours(0,0,0,0);
+            result.push(tmp);
         }        
         curDateLoop.setDate(curDateLoop.getDate() + 1); // advance by 1 day to continue loop
     }
