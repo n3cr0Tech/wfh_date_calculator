@@ -30,15 +30,15 @@ export default function PTODates(props: {handleChangeInPTOStartDates: (e:any) =>
     }
 
     const handleStartDateElementOnChange = (date: Date|null, index: number) =>{                
-        const list = [...startDateList];
-        list[index] = date;        
+        const list = [...startDateList];        
+        list[index] = date ? date : new Date();
         setStartDateList(list);
         props.handleChangeInPTOStartDates(startDateList);        
     }
 
     const handleEndDateElementOnChange = (date: Date|null, index: number) =>{
         const list = [...endDateList];
-        list[index] = date;        
+        list[index] = date ? date : new Date();
         setEndDateList(list);        
         props.handleChangeInPTOEndDates(endDateList);
     }

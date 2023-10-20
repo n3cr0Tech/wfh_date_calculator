@@ -11,7 +11,9 @@ export async function POST(req: Request){
         let formData = {} as FormData;
         formData = body;
 
-        let output = GetCalculatedOutputForUser(formData);
+        let today = new Date();
+        today.setHours(0,0,0,0);
+        let output = GetCalculatedOutputForUser(today, formData);
 
         
          // // Send a response
