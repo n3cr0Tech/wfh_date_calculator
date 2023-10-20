@@ -37,10 +37,11 @@ export function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
 export function GetDatesToAttendOfficeWithinCycle(today: Date, startDateOfWorkCycle: Date, numberOfWeeksInCycle: number, ptoDates: Date[]): Date[]{
     let result = [] as Date[];    
     let curDateLoop = GetDateToStartLoopFrom(today, startDateOfWorkCycle);
-    console.log(`!!! GetDatesToAttendOfficeWithinCycle.startDay: ${curDateLoop}`);
+    // console.log(`!!! GetDatesToAttendOfficeWithinCycle.startDay: ${curDateLoop}`);
     let endDateLoop = GetEndDateOfWorkCycle(startDateOfWorkCycle, numberOfWeeksInCycle);
-    console.log(`!!! GetDatesToAttendOfficeWithinCycle.endDateLoop: ${endDateLoop}`);
-    while(curDateLoop <= endDateLoop){
+    // console.log(`!!! GetDatesToAttendOfficeWithinCycle.endDateLoop: ${endDateLoop}`);
+    while(curDateLoop < endDateLoop){
+        console.log(`!!! GetDatesToAttendOfficeWithinCycle loop; ${curDateLoop.getDate()} <VS> ${endDateLoop.getDate()}`)
         if(DateIsValid(curDateLoop, ptoDates)){
             result.push(curDateLoop);
         }
