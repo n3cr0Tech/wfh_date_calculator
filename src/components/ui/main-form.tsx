@@ -94,7 +94,10 @@ export default function MainForm() {
                 <button type="submit" className="btn rounded-md text-white bg-blue-600 hover:bg-blue-700 w-full py-2 px-4">Calculate</button>
                 </div>
               </div>
-              <h2>{CalculatedOutput}</h2>
+              <textarea 
+                className="w-full py-12 text-black"
+                value={CalculatedOutput}
+              />              
             </form>
           </div>          
         </div>        
