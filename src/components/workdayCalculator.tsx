@@ -6,16 +6,21 @@ export default function GetCalculatedOutputForUser(today: Date, formData: FormDa
     console.log("!!! GetCalculatedOutputForUser formData:");
     console.log(formData);
     let result = ``;
+    //turn attendance requirement it into a decimal percentage
+    formData.attendanceRequired /= 100;
     let endDateInCycle = GetEndDateOfWorkCycle(formData.startDate, formData.weeksInWorkCycle);
-
+    // console.log(`!!! startDate0: ${formData.startDate}`);
     let flattenedPTODates = FlattenPTODates(formData.ptoDates.startDates, formData.ptoDates.endDates);    
-    console.log(`!!! flattenedPTODates: ${flattenedPTODates}`);
+    // console.log(`!!! flattenedPTODates: ${flattenedPTODates}`);
     let datesToBeInTheOffice = GetDatesToAttendOfficeWithinCycle(today, formData.startDate, formData.weeksInWorkCycle, flattenedPTODates);
-    console.log(`!!! datesToBeInTheOffice: ${datesToBeInTheOffice}`);
+    // console.log(`!!! startDate1: ${formData.startDate}`);
+    // console.log(`!!! datesToBeInTheOffice: ${datesToBeInTheOffice}`);
     let workDaysRatio = GetWorkRatio(formData.startDate, endDateInCycle, datesToBeInTheOffice.length);
-    console.log(`!!! workDaysRatio: ${workDaysRatio}`);
+    // console.log(`!!! workDaysRatio: ${workDaysRatio}`);
+    // console.log(`!!! startDate2: ${formData.startDate}`);
 
 
+    console.log(`!!! workRatio: ${workDaysRatio} <VS> attendanceReq: ${formData.attendanceRequired}`);
     if(ItIsPossibleToMeetAttendanceRequirement(workDaysRatio, formData.attendanceRequired)){        
         result = `YES: It's possible to fulfill the required office attendance of ${formData.attendanceRequired}% `;
         result += GetSuccessOutputString(datesToBeInTheOffice);
@@ -57,9 +62,9 @@ function FormattedDateStamp(dateObject: Date): string{
     return result;
 }
 
-function GetWorkRatio(startDateCycle: Date, endDateCycle: Date, datesToBeInOffice: number): number{    
+export function GetWorkRatio(startDateCycle: Date, endDateCycle: Date, possibleWorkDaysTotal: number): number{    
     let totalWorkDaysInCycle = CalculateTotalWorkDays(startDateCycle, endDateCycle);    
-    let ratio = datesToBeInOffice / totalWorkDaysInCycle;
+    let ratio = possibleWorkDaysTotal / totalWorkDaysInCycle;
     return ratio;
 }
 

@@ -49,6 +49,7 @@ export default function MainForm() {
 
     let today = new Date();
     let output = GetCalculatedOutputForUser(today, formData);
+    // console.log(`!!! formData.startDate: ${startDate}`);
     setCalculatedOutput(output);
 
   }

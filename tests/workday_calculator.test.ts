@@ -8,7 +8,7 @@ test('GetWorkRatio returns properly', () => {
     let endDate = new Date(`${today.getFullYear()}-01-07`);
     let possibleWorkDaysTotal = 5;
     let actual = GetWorkRatio(startDate, endDate, possibleWorkDaysTotal);
-    expect(actual).toBe(1);
+    expect(actual).toBe(1); // 1 because A/B where A is the possible workdays total (no pto in this scenario) and B is the total workdays
 });
 
 
@@ -47,7 +47,7 @@ test('GetCalculatedOutputForUser returns properly', () => {
 
     let mockFormData = createMockFormData(startDate, ptoDate0);
     let actual = GetCalculatedOutputForUser(startDate, mockFormData);
-    expect(actual.length).toBe(4);
+    expect(actual.substring(0, 3)).toStrictEqual("YES");
 });
 
 function createMockFormData(startDate: Date, ptoDate: Date): FormData{
