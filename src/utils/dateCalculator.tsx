@@ -23,7 +23,7 @@ export function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
     let a = new Date(startDate);
     let b = new Date(endDate);    
     let dateDiff = intervalToDuration({start: a, end: b}).days || 0; //number of days between dates    
-    dateDiff += 1; // include the startDate
+    // dateDiff += 1; // include the startDate
 
     let weekendDays = GetWeekendDayDates(a, b);
     let bankHolidays = GetBankHolidaysWithinStartEndDates(startDate, endDate);
