@@ -1,11 +1,22 @@
-import { intervalToDuration } from "date-fns";
-import { CalculateTotalWorkDays, CalculateWeekendDaysAndHolidayDates, GetBankHolidaysWithinStartEndDates, GetDatesBetweenStartEndDates, GetDatesToAttendOfficeWithinCycle, GetEndDateOfWorkCycle, GetWeekendDayDates, GetWeekendDaysCount } from "../src/utils/dateCalculator";
+import { intervalToDuration, parse } from "date-fns";
+import { CalculateTotalWorkDays, CalculateWeekendDaysAndHolidayDates, GetBankHolidaysWithinStartEndDates, GetDatesBetweenStartEndDates, GetDatesToAttendOfficeWithinCycle, GetDaysBetweenDatesInclusive, GetEndDateOfWorkCycle, GetWeekendDayDates, GetWeekendDaysCount } from "../src/utils/dateCalculator";
+
+
+
+
+test('GetDatesBetweenStartEndDates returns properly', () => {
+    let startDate = parse('2023-01-01', 'yyyy-MM-dd', new Date());
+    let endDate = parse('2023-01-07', 'yyyy-MM-dd', new Date());
+
+    let actual = GetDatesBetweenStartEndDates(startDate, endDate);
+    expect(actual.length).toBe(7);
+});
 
 
 test('Date subtractions works properly', () => {
     let today = new Date()
-    let startDate = new Date(`${today.getFullYear()}-01-01`);
-    let endDate = new Date(`${today.getFullYear()}-01-07`);
+    let startDate = parse('2023-01-01', 'yyyy-MM-dd', new Date());    
+    let endDate = parse('2023-01-07', 'yyyy-MM-dd', new Date());      
     let expected = 6;
     let actual = intervalToDuration(
         {
@@ -17,8 +28,8 @@ test('Date subtractions works properly', () => {
 
 test('GetWeekendDaysCount returns properly', () => {
     let today = new Date()
-    let startDate = new Date(`${today.getFullYear()}-01-01`);
-    let endDate = new Date(`${today.getFullYear()}-01-07`);
+    let startDate = parse('2023-01-01', 'yyyy-MM-dd', new Date());    
+    let endDate = parse('2023-01-07', 'yyyy-MM-dd', new Date());  
     let expected = 2;
     let actual = GetWeekendDaysCount(startDate, endDate);
     expect(actual).toBe(expected);
@@ -26,8 +37,8 @@ test('GetWeekendDaysCount returns properly', () => {
 
 test('GetBankHolidaysWithinStartDates returns properly', () => {
     let today = new Date()
-    let startDate = new Date(`${today.getFullYear()}-01-01`);
-    let endDate = new Date(`${today.getFullYear()}-01-07`);
+    let startDate = parse('2023-01-01', 'yyyy-MM-dd', new Date());    
+    let endDate = parse('2023-01-07', 'yyyy-MM-dd', new Date());  
     let expected = startDate;
     let actual = GetBankHolidaysWithinStartEndDates(startDate, endDate);
     expect(actual.length).toBe(1);
@@ -36,8 +47,8 @@ test('GetBankHolidaysWithinStartDates returns properly', () => {
 
 test('CalculateWeekendDaysAndHolidayDates returns properly', () => {
     let today = new Date()
-    let startDate = new Date(`${today.getFullYear()}-01-01`);
-    let endDate = new Date(`${today.getFullYear()}-01-07`);
+    let startDate = parse('2023-01-01', 'yyyy-MM-dd', new Date());    
+    let endDate = parse('2023-01-07', 'yyyy-MM-dd', new Date());  
     
     let weekendDays = GetWeekendDayDates(startDate, endDate);
     let bankHolidaysCount = GetBankHolidaysWithinStartEndDates(startDate, endDate);
@@ -50,31 +61,30 @@ test('CalculateWeekendDaysAndHolidayDates returns properly', () => {
 
 test('CalculateTotalWorkDays returns properly', () => {
     let today = new Date()
-    let startDate = new Date(`${today.getFullYear()}-01-01`);
-    let endDate = new Date(`${today.getFullYear()}-01-07`);
+    let startDate = parse('2023-01-01', 'yyyy-MM-dd', new Date());    
+    let endDate = parse('2023-01-07', 'yyyy-MM-dd', new Date());  
     let expected = 5;
     let actual = CalculateTotalWorkDays(startDate, endDate);
     expect(actual).toBe(expected);
 });
 
 test('GetEndDateOfWorkCycle returns properly', () => {
-    let today = new Date();
-    let startDate = new Date(`${today.getFullYear()}-01-01`);
+    let today = new Date();    
+    let startDate = parse('2023-01-01', 'yyyy-MM-dd', new Date());        
     let weeksInACycle = 1;
-    let actual = GetEndDateOfWorkCycle(startDate, 1);
-    let expected = new Date(`${today.getFullYear()}-01-08`);
+    let actual = GetEndDateOfWorkCycle(startDate, weeksInACycle);
+    let expected = parse('2023-01-08', 'yyyy-MM-dd', new Date());  
     expect(actual).toStrictEqual(expected);
 })
 
 test('GetDatesToAttendOfficeWithinCycle returns properly', () => {
     let today = new Date();
-    let todayMock = new Date(`${today.getFullYear()}-01-01`);
-    let startDate = new Date(`${today.getFullYear()}-01-01`);
+    let startDate = parse('2023-01-01', 'yyyy-MM-dd', new Date());    
+    let todayMock = parse('2023-01-01', 'yyyy-MM-dd', new Date());        
 
-    let pto0 = new Date(`${today.getFullYear()}-01-02`);
+    let pto0 = parse('2023-01-02', 'yyyy-MM-dd', new Date());        
     let ptoDates = [pto0];
     let actual = GetDatesToAttendOfficeWithinCycle(todayMock, startDate, 1, ptoDates);
     expect(actual.length).toBe(4);
 
 })
-

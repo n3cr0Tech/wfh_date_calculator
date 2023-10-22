@@ -4,12 +4,13 @@ import { CalculateTotalWorkDays, GetDatesBetweenStartEndDates, GetDatesToAttendO
 
 
 export default function GetCalculatedOutputForUser(today: Date, formData: FormData ): string{
-    console.log("!!! GetCalculatedOutputForUser formData:");
+    // console.log("!!! GetCalculatedOutputForUser formData:");
     console.log(formData);
     let result = ``;
     //turn attendance requirement it into a decimal percentage
     formData.attendanceRequired /= 100;
     today.setHours(0,0,0,0);//set time to 0's because it can mess with the calculations
+    formData.startDate.setHours(0,0,0,0);
 
     let endDateInCycle = GetEndDateOfWorkCycle(formData.startDate, formData.weeksInWorkCycle);
     // console.log(`!!! startDate0: ${formData.startDate}`);
@@ -18,12 +19,13 @@ export default function GetCalculatedOutputForUser(today: Date, formData: FormDa
     let datesToBeInTheOffice = GetDatesToAttendOfficeWithinCycle(today, formData.startDate, formData.weeksInWorkCycle, flattenedPTODates);
     // console.log(`!!! startDate1: ${formData.startDate}`);
     // console.log(`!!! datesToBeInTheOffice: ${datesToBeInTheOffice}`);
+    // console.log(`!!! datesToBeInTheOffice count: ${datesToBeInTheOffice.length}`);
     let workDaysRatio = GetWorkRatio(formData.startDate, endDateInCycle, datesToBeInTheOffice.length);
     // console.log(`!!! workDaysRatio: ${workDaysRatio}`);
     // console.log(`!!! startDate2: ${formData.startDate}`);
 
 
-    console.log(`!!! workRatio: ${workDaysRatio} <VS> attendanceReq: ${formData.attendanceRequired}`);
+    // console.log(`!!! workRatio: ${workDaysRatio} <VS> attendanceReq: ${formData.attendanceRequired}`);
     if(ItIsPossibleToMeetAttendanceRequirement(workDaysRatio, formData.attendanceRequired)){        
         result = `YES: It's possible to fulfill the required office attendance of ${formData.attendanceRequired * 100}% \n\n`;
         result += GetSuccessOutputString(datesToBeInTheOffice);
@@ -33,7 +35,7 @@ export default function GetCalculatedOutputForUser(today: Date, formData: FormDa
         result += `It wont be possible to complete the attendance percentage of: ${formData.attendanceRequired * 100}% with the given data`;
     }
 
-    console.log(`!!! RESULT: ${result}`);
+    // console.log(`!!! RESULT: ${result}`);
     return result;
 }
 
@@ -52,7 +54,9 @@ function FormattedDateStamp(dateObject: Date): string{
 }
 
 export function GetWorkRatio(startDateCycle: Date, endDateCycle: Date, possibleWorkDaysTotal: number): number{    
+    // console.log(`GetWorkRatio: ${startDateCycle} TO ${endDateCycle}`);
     let totalWorkDaysInCycle = CalculateTotalWorkDays(startDateCycle, endDateCycle);    
+    // console.log(`!!! totalWorkDaysInCycle: ${totalWorkDaysInCycle}`);
     let ratio = possibleWorkDaysTotal / totalWorkDaysInCycle;
     return ratio;
 }

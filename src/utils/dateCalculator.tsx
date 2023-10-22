@@ -3,13 +3,15 @@ import GetBankHolidays from "../common/bankHolidays";
 
 export function GetEndDateOfWorkCycle(startDate: Date, weeksInACycle: number): Date{
     let result = new Date(startDate);
-    let daysInCycle = weeksInACycle * 7;
-    result.setDate(startDate.getDate() + daysInCycle);
     result.setHours(0,0,0,0);
+    let daysInCycle = weeksInACycle * 7;    
+    result = addDays(startDate, daysInCycle);
     return result;
 
 }
 
+// NOT using this function bcuz it has weird inconsistencies
+// it would be correct on some online compiler but NOT here in the unit tests
 // export function CalculateTotalDays(startDate: Date, endDate: Date): number{
 //     let a = new Date(startDate);
 //     let b = new Date(endDate);
@@ -22,16 +24,33 @@ export function CalculateTotalWorkDays(startDate: Date, endDate: Date): number{
     console.log(`CalculateTotalWorkDays: ${startDate} TO ${endDate}`);
     let a = new Date(startDate);
     let b = new Date(endDate);    
-    let dateDiff = intervalToDuration({start: a, end: b}).days || 0; //number of days between dates    
-    // dateDiff += 1; // include the startDate
+    let dateDiff = GetDaysBetweenDatesInclusive(startDate, endDate).length;
+    // console.log(`dateDiff: ${dateDiff}`);
 
     let weekendDays = GetWeekendDayDates(a, b);
     let bankHolidays = GetBankHolidaysWithinStartEndDates(startDate, endDate);
     let combinedWeekednDaysAndHolidaysCount = CalculateWeekendDaysAndHolidayDates(weekendDays, bankHolidays).length;
-    console.log(`weekendDays: ${weekendDays}`);
-    console.log(`bankHolidaysCount: ${bankHolidays}`);
-    console.log(`combinedWeekednDaysAndHolidaysCount: ${combinedWeekednDaysAndHolidaysCount}`);
+    // console.log(`weekendDays: ${weekendDays}`);
+    // console.log(`bankHolidaysCount: ${bankHolidays.length}`);
+    // console.log(`combinedWeekednDaysAndHolidaysCount: ${combinedWeekednDaysAndHolidaysCount}`);
     let result = dateDiff - combinedWeekednDaysAndHolidaysCount;
+    return result;
+}
+
+// made this into a loop instead of intervalToDuration() bcuz
+// intervalToDuration()  cant calculate solely on days
+export function GetDaysBetweenDatesInclusive(startDate: Date, endDate: Date){
+    let result = [] as Date[];        
+    let curDateLoop = new Date(startDate); //deepcopy  
+    curDateLoop.setHours(0,0,0,0);  
+    endDate.setHours(0,0,0,0);
+    // console.log(`!!! GetDatesToAttendOfficeWithinCycle.endDateLoop: ${endDateLoop}`);
+    while(curDateLoop <= endDate){
+        let tmp = new Date(curDateLoop);  
+        tmp.setHours(0,0,0,0);
+        result.push(tmp);                
+        curDateLoop = addDays(curDateLoop, 1); // advance by 1 day to continue loop
+    }
     return result;
 }
 
@@ -45,12 +64,14 @@ export function GetDatesToAttendOfficeWithinCycle(today: Date, startDateOfWorkCy
     let endDateLoop = GetEndDateOfWorkCycle(startDateOfWorkCycle, numberOfWeeksInCycle);
     // console.log(`!!! GetDatesToAttendOfficeWithinCycle.endDateLoop: ${endDateLoop}`);
     while(curDateLoop <= endDateLoop){
-        console.log(`!!! GetDatesToAttendOfficeWithinCycle loop; ${curDateLoop} <VS> ${endDateLoop}`)        
-        if(DateIsValid(curDateLoop, ptoDates)){
-            let tmp = new Date(curDateLoop);            
+        // console.log(`!!! GetDatesToAttendOfficeWithinCycle loop; ${curDateLoop} <VS> ${endDateLoop}`)        
+        if(DateIsValidWorkday(curDateLoop, ptoDates)){            
+            let tmp = new Date(curDateLoop);          
+            tmp.setHours(0,0,0,0);
+            // console.log(tmp);
             result.push(tmp);
         }
-        curDateLoop.setDate(curDateLoop.getDate() + 1); // advance by 1 day to continue loop
+        curDateLoop = addDays(curDateLoop, 1); // advance by 1 day to continue loop
     }
     return result;
 }
@@ -68,13 +89,14 @@ export function GetDatesBetweenStartEndDates(startDate: Date, endDate: Date): Da
     return result;
 }
 
-function DateIsValid(date: Date, ptoDates: Date[]): boolean{    
-    console.log(`checking if date is valid: ${date}; dayNumber: ${date.getDay()}`);
+// If day IS a weekday AND not a PTO nor a bank holiday
+function DateIsValidWorkday(date: Date, ptoDates: Date[]): boolean{    
+    // console.log(`checking if date is valid: ${date}; dayNumber: ${date.getDay()}`);
     let dateIsWorkday = DateIsWorkday(date);
     let dateIsBankHoliday = DateIsBankHoliday(date, GetBankHolidays());
     let dateIsPTO = DateIsPTO(date, ptoDates);
     let result = dateIsWorkday && !dateIsBankHoliday && !dateIsPTO
-    console.log(`isWorkDay: ${dateIsWorkday}...isHoliday: ${dateIsBankHoliday}...isPTO: ${dateIsPTO}`);
+    // console.log(`isWorkDay: ${dateIsWorkday}...isHoliday: ${dateIsBankHoliday}...isPTO: ${dateIsPTO}`);
     return result;
 }
 
@@ -161,7 +183,7 @@ export function GetWeekendDayDates(startDate: Date, endDate: Date): Date[]{
             tmp.setHours(0,0,0,0);
             result.push(tmp);
         }        
-        curDateLoop.setDate(curDateLoop.getDate() + 1); // advance by 1 day to continue loop
+        curDateLoop = addDays(curDateLoop, 1); // advance by 1 day to continue loop
     }
     return result;
 }
@@ -170,12 +192,23 @@ export function GetWeekendDayDates(startDate: Date, endDate: Date): Date[]{
 // Example: if Jan 1st is a Sunday AND a bank holiday, it should only be accounted for once
 export function CalculateWeekendDaysAndHolidayDates(weekendDays: Date[], holidays: Date[]): Date[]{
     let result = [] as Date[];
+
+    //deep copy weekend days into result[]
     for(let i = 0; i < weekendDays.length; i++){
-        // if weekend is not already a holiday, add to result array
-        if(!DateIsInList(weekendDays[i], holidays)){
-            result.push(weekendDays[i]);
+        let tmp = new Date(weekendDays[i]);
+        tmp.setHours(0,0,0,0);
+        result.push(tmp);
+    }
+
+    for(let i = 0; i < holidays.length; i++){
+         // if weekend is not already a holiday, add to result array
+         if(!DateIsInList(holidays[i], result)){
+            let tmp = new Date(holidays[i]);
+            tmp.setHours(0,0,0,0);
+            result.push(tmp);
         }        
     }
+
     return result;
 }
 
