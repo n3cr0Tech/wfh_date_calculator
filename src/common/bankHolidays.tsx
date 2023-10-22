@@ -1,16 +1,21 @@
+import { parse } from "date-fns";
+
 export default function GetBankHolidays(){
     let today = new Date();
-    let bh0 = new Date(`${today.getFullYear()}-01-01`); //New year's
-    let bh1 = new Date(`${today.getFullYear()}-01-16`); 
-    let bh2 = new Date(`${today.getFullYear()}-02-20`);
-    let bh3 = new Date(`${today.getFullYear()}-05-29`);
-    let bh4 = new Date(`${today.getFullYear()}-06-19`);
-    let bh5 = new Date(`${today.getFullYear()}-07-04`);
-    let bh6 = new Date(`${today.getFullYear()}-09-04`);
-    let bh7 = new Date(`${today.getFullYear()}-10-09`);
-    let bh8 = new Date(`${today.getFullYear()}-10-23`);    
-    let bh9 = new Date(`${today.getFullYear()}-11-11`);
-    let bh10 = new Date(`${today.getFullYear()}-12-25`);
+    let bh0 = parse(`${today.getFullYear()}-01-01`, 'yyyy-MM-dd', new Date());
+
+
+   
+    let bh1 = parse(`${today.getFullYear()}-01-16`, 'yyyy-MM-dd', new Date()); 
+    let bh2 = parse(`${today.getFullYear()}-02-20`, 'yyyy-MM-dd', new Date());
+    let bh3 = parse(`${today.getFullYear()}-05-29`, 'yyyy-MM-dd', new Date());
+    let bh4 = parse(`${today.getFullYear()}-06-19`, 'yyyy-MM-dd', new Date());
+    let bh5 = parse(`${today.getFullYear()}-07-04`, 'yyyy-MM-dd', new Date());
+    let bh6 = parse(`${today.getFullYear()}-09-04`, 'yyyy-MM-dd', new Date());
+    let bh7 = parse(`${today.getFullYear()}-10-09`, 'yyyy-MM-dd', new Date());
+    let bh8 = parse(`${today.getFullYear()}-10-23`, 'yyyy-MM-dd', new Date());
+    let bh9 = parse(`${today.getFullYear()}-11-11`, 'yyyy-MM-dd', new Date());
+    let bh10 = parse(`${today.getFullYear()}-12-25`, 'yyyy-MM-dd', new Date());
 
     let result = [] as Date[];
     result.push(bh0);
