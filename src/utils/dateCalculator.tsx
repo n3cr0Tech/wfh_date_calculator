@@ -56,12 +56,13 @@ export function GetDaysBetweenDatesInclusive(startDate: Date, endDate: Date){
 
 
 // return list of Dates to be in the office
-export function GetDatesToAttendOfficeWithinCycle(today: Date, startDateOfWorkCycle: Date, numberOfWeeksInCycle: number, ptoDates: Date[]): Date[]{
+export function GetDatesToAttendOfficeWithinCycle(today: Date, endDateCycle: Date, ptoDates: Date[]): Date[]{
     let result = [] as Date[];    
     // let tmp = GetDateToStartLoopFrom(today, startDateOfWorkCycle);
     let curDateLoop = new Date(today); //deepcopy
     // console.log(`!!! GetDatesToAttendOfficeWithinCycle.startDay: ${curDateLoop}`);
-    let endDateLoop = GetEndDateOfWorkCycle(startDateOfWorkCycle, numberOfWeeksInCycle);
+    let endDateLoop = new Date(endDateCycle);
+    endDateLoop.setHours(0,0,0,0);
     // console.log(`!!! GetDatesToAttendOfficeWithinCycle.endDateLoop: ${endDateLoop}`);
     while(curDateLoop <= endDateLoop){
         // console.log(`!!! GetDatesToAttendOfficeWithinCycle loop; ${curDateLoop} <VS> ${endDateLoop}`)        

@@ -16,7 +16,7 @@ export default function GetCalculatedOutputForUser(today: Date, formData: FormDa
     // console.log(`!!! startDate0: ${formData.startDate}`);
     let flattenedPTODates = FlattenPTODates(formData.ptoDates.startDates, formData.ptoDates.endDates);    
     // console.log(`!!! flattenedPTODates: ${flattenedPTODates}`);
-    let datesToBeInTheOffice = GetDatesToAttendOfficeWithinCycle(today, formData.startDate, formData.weeksInWorkCycle, flattenedPTODates);
+    let datesToBeInTheOffice = GetDatesToAttendOfficeWithinCycle(today, endDateInCycle, flattenedPTODates);
     // console.log(`!!! startDate1: ${formData.startDate}`);
     // console.log(`!!! datesToBeInTheOffice: ${datesToBeInTheOffice}`);
     // console.log(`!!! datesToBeInTheOffice count: ${datesToBeInTheOffice.length}`);

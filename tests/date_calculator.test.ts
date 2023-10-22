@@ -77,14 +77,13 @@ test('GetEndDateOfWorkCycle returns properly', () => {
     expect(actual).toStrictEqual(expected);
 })
 
-test('GetDatesToAttendOfficeWithinCycle returns properly', () => {
-    let today = new Date();
-    let startDate = parse('2023-01-01', 'yyyy-MM-dd', new Date());    
+test('GetDatesToAttendOfficeWithinCycle returns properly', () => {    
+    let endDate = parse('2023-01-08', 'yyyy-MM-dd', new Date());    
     let todayMock = parse('2023-01-01', 'yyyy-MM-dd', new Date());        
 
     let pto0 = parse('2023-01-02', 'yyyy-MM-dd', new Date());        
     let ptoDates = [pto0];
-    let actual = GetDatesToAttendOfficeWithinCycle(todayMock, startDate, 1, ptoDates);
+    let actual = GetDatesToAttendOfficeWithinCycle(todayMock, endDate, ptoDates);
     expect(actual.length).toBe(4);
 
 })
