@@ -65,7 +65,7 @@ export function GetDatesToAttendOfficeWithinCycle(today: Date, endDateCycle: Dat
     endDateLoop.setHours(0,0,0,0);
     // console.log(`!!! GetDatesToAttendOfficeWithinCycle.endDateLoop: ${endDateLoop}`);
     while(curDateLoop <= endDateLoop){
-        // console.log(`!!! GetDatesToAttendOfficeWithinCycle loop; ${curDateLoop} <VS> ${endDateLoop}`)        
+        console.log(`!!! GetDatesToAttendOfficeWithinCycle loop; ${curDateLoop} <VS> ${endDateLoop}`)        
         if(DateIsValidWorkday(curDateLoop, ptoDates)){            
             let tmp = new Date(curDateLoop);          
             tmp.setHours(0,0,0,0);
@@ -97,7 +97,7 @@ function DateIsValidWorkday(date: Date, ptoDates: Date[]): boolean{
     let dateIsBankHoliday = DateIsBankHoliday(date, GetBankHolidays());
     let dateIsPTO = DateIsPTO(date, ptoDates);
     let result = dateIsWorkday && !dateIsBankHoliday && !dateIsPTO
-    // console.log(`isWorkDay: ${dateIsWorkday}...isHoliday: ${dateIsBankHoliday}...isPTO: ${dateIsPTO}`);
+    console.log(`isWorkDay: ${dateIsWorkday}...isHoliday: ${dateIsBankHoliday}...isPTO: ${dateIsPTO}`);
     return result;
 }
 

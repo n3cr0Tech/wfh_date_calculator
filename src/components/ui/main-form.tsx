@@ -5,25 +5,49 @@ import { FormData } from "@/models/formData";
 import 'react-datepicker/dist/react-datepicker.css';
 import PTODates from "./pto-dates";
 import GetCalculatedOutputForUser from "../workdayCalculator";
+import { PTODateRange } from "@/models/ptoDateRange";
 
 
 export default function MainForm() {
   const [CalculatedOutput, setCalculatedOutput] = useState("");
   const [startDate, setStartDate] = useState<Date | null>(new Date());  
-  const [ptoStartDates, setPTOStartDates] = useState<Date[]>([new Date()]);
-  const [ptoEndDates, setPTOEndDates] = useState<Date[]>([new Date()]);
+  const [ptoDates, setPTODates] = useState<PTODateRange[]>([{startDate: new Date(), endDate: new Date()}])
 
 
-  const handleChangeInPTOStartDates = (data: Date[]) =>{
-    setPTOStartDates(data);
-    console.log('incoming data:');
-    console.log(data);
-    console.log("updating startdates: ");
-    console.log(ptoStartDates);
+  const handleAddPTORow = () =>{
+    let tmp = [...ptoDates];
+    //create a new date, based on today (so that the new row has placeholder data to display)
+    tmp.push({
+      startDate: CreateNewDate(),
+      endDate: CreateNewDate()
+    });
+    setPTODates(tmp);
   }
 
-  const handleChangeInPTOEndDates = (data: Date[]) =>{
-    setPTOEndDates(data);
+  const handleRemovePTORow = (index: number) =>{
+    let tmp = [...ptoDates];
+    tmp.splice(index, 1);
+    setPTODates(tmp);
+  }
+
+  const CreateNewDate = () =>{
+    let tmp = new Date();
+    tmp.setHours(0,0,0,0);
+    return tmp;
+  }
+
+  //if isStart==false then it's a an endDate data
+  const handleChangeInPTODates = (isStart: boolean, data: Date, i: number) =>{  
+    const tmpList = [...ptoDates]; 
+    if(isStart){
+      tmpList[i].startDate = data;
+    }else{
+      tmpList[i].endDate = data;
+    }
+        
+    // tmpList[i] = data;    
+    // console.log(`updating tmp endList: ${tmpList[i]}`);
+    setPTODates(tmpList);    
   }
 
   const handleSubmit = (event: any) =>{
@@ -39,10 +63,7 @@ export default function MainForm() {
     formData.startDate = copyStartDate;
     formData.attendanceRequired = event.target.attendancePercentReq.value;
     formData.weeksInWorkCycle = event.target.weeksInEachCycle.value;
-    formData.ptoDates = {
-      startDates: ptoStartDates,
-      endDates: ptoEndDates
-    }
+    formData.ptoDates = ptoDates;
     
     console.log("!!! onSubmit formData: ");
     console.log(formData);
@@ -93,7 +114,7 @@ export default function MainForm() {
               </div>
               
               <div className="py-5">                
-                <PTODates handleChangeInPTOStartDates={handleChangeInPTOStartDates} handleChangeInPTOEndDates={handleChangeInPTOEndDates}></PTODates>
+                <PTODates handlePTOAddRow={handleAddPTORow} handlePTORemoveRow={handleRemovePTORow} handlePTOUpdateRow={handleChangeInPTODates} ptoDates={ptoDates}></PTODates>
               </div>   
 
               <div className="flex flex-wrap -mx-3 mt-6">
