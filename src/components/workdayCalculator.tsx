@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { FormData } from "../models/formData";
 import { CalculateTotalWorkDays, GetDatesBetweenStartEndDates, GetDatesToAttendOfficeWithinCycle, GetEndDateOfWorkCycle } from "../utils/dateCalculator";
+import { PTODateRange } from "@/models/ptoDateRange";
 
 
 export default function GetCalculatedOutputForUser(today: Date, formData: FormData ): string{
@@ -14,7 +15,7 @@ export default function GetCalculatedOutputForUser(today: Date, formData: FormDa
 
     let endDateInCycle = GetEndDateOfWorkCycle(formData.startDate, formData.weeksInWorkCycle);
     // console.log(`!!! startDate0: ${formData.startDate}`);
-    let flattenedPTODates = FlattenPTODates(formData.ptoDates.startDates, formData.ptoDates.endDates);    
+    let flattenedPTODates = FlattenPTODates(formData.ptoDates);    
     // console.log(`!!! flattenedPTODates: ${flattenedPTODates}`);
     let datesToBeInTheOffice = GetDatesToAttendOfficeWithinCycle(today, endDateInCycle, flattenedPTODates);
     // console.log(`!!! startDate1: ${formData.startDate}`);
@@ -68,10 +69,10 @@ function ItIsPossibleToMeetAttendanceRequirement(ratio: number, attendancePercen
 
 // Ex: turns start & end dates of 04/25 to 04/28 and returns Date[]:
 // [04/25, 04/26, 04/27, 04/28] (all as Date objects)
-export function FlattenPTODates(startDates: Date[], endDates: Date[]): Date[]{
+export function FlattenPTODates(ptoDateRanges: PTODateRange[]): Date[]{
     var flattenedDates = [] as Date[];
-    for(let i = 0; i < startDates.length; i++){
-        let curDateRange = FlattenStartEndDates(startDates[i], endDates[i]);        
+    for(let i = 0; i < ptoDateRanges.length; i++){
+        let curDateRange = FlattenStartEndDates(ptoDateRanges[i].startDate, ptoDateRanges[i].endDate);        
         flattenedDates = flattenedDates.concat(curDateRange) ;        
     }    
     return flattenedDates;
